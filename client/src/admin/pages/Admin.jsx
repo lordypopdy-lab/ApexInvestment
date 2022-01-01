@@ -32,7 +32,13 @@ const Admin = () => {
     const [show4, setShow4] = useState(false);
     const [show5, setShow5] = useState(false);
     const [show6, setShow6] = useState(false);
+    const [show7, setShow7] = useState(false);
+    const [show8, setShow8] = useState(false);
+    const [show9, setShow9] = useState(false);
     const [cryptoR, setCryptoR] = useState([]);
+    const [kycAction, setKycAction] = useState('');
+    const [kycDecline, setKycDecline] = useState('');
+    const [kycApprove, setKycApprove] = useState('');
     const [isLoading, setLoading] = useState(false);
     const [isLoading1, setLoading1] = useState(false);
     const [isLoading2, setLoading2] = useState(false);
@@ -40,15 +46,28 @@ const Admin = () => {
     const [isLoading4, setLoading4] = useState(false);
     const [isLoading5, setLoading5] = useState(false);
     const [isLoading6, setLoading6] = useState(false);
+    const [isLoading7, setLoading7] = useState(false);
+    const [isLoading8, setLoading8] = useState(false);
+    const [isLoading9, setLoading9] = useState(false);
     const [UID, setUID] = useState({ ID: "", ULevel: "" });
     const [message, setMessage] = useState({ id: "", value: "" });
     const [notification, setNotification] = useState({ id: "", value: "" })
     const [adder, setAdder] = useState({ id: "", value: "", type: "" });
     const [isBalanceVisible, setIsBalanceVisible] = useState(true);
+    const [userAuth, setUserAuth] = useState([])
 
     useEffect(() => {
         const Admin = JSON.parse(localStorage.getItem("admin"));
         const email = Admin.email;
+
+        const getKyc  = async () => {
+            await axios.get("fetchAllKyc").then((data)=>{
+                if(data.data.kyc){
+                    setUserAuth(data.data.kyc)
+                }
+            })
+        }
+        getKyc();
 
         const getCryptoRecords = async () => {
             await axios.post("/AdminGetCrypto", { email }).then((data) => {
@@ -160,6 +179,68 @@ const Admin = () => {
     const handleShow6 = (data) => {
         setShow6(true)
         setDelete(data);
+    }
+    const handleClose7 = () => setShow7(false);
+    const handleShow7 = (data) => {
+        setShow7(true)
+        setKycAction(data);
+    }
+    const handleClose8 = () => setShow8(false);
+    const handleShow8 = (data) => {
+        setShow8(true)
+        setKycDecline(data);
+    }
+    const handleClose9 = () => setShow9(false);
+    const handleShow9 = (data) => {
+        setShow9(true)
+        setKycApprove(data);
+    }
+
+    const handleKyApprove = async () => {
+        handleShow9();
+        setLoading9(true);
+
+        await axios.post("/approveKyc", {kycApprove}).then((data)=>{
+            if(data.data.success){
+                setLoading9(false)
+                toast.success(data.data.success)
+                console.log(data.data);
+            }else if(data.data.error){
+                setLoading9(false);
+                toast.error(data.data.error);
+            }
+        })
+    }
+    
+    const handleKyDecline = async () => {
+        handleShow8();
+        setLoading8(true);
+
+        await axios.post("/declineKyc", {kycDecline}).then((data)=>{
+            if(data.data.success){
+                setLoading8(false)
+                toast.success(data.data.success)
+                console.log(data.data);
+            }else if(data.data.error){
+                setLoading8(false);
+                toast.error(data.data.error);
+            }
+        })
+    }
+
+    const handleKycAction = async () => {
+        handleShow7();
+        setLoading7(true);
+
+        await axios.post("/deleteKyc", {kycAction}).then((data)=>{
+            if(data.data.success){
+                toast.success(data.data.success);
+                setLoading7(false);
+            }else if (data.data.error){
+                setLoading7(false);
+                toast.error(data.data.error);
+            }
+        })
     }
 
     const handleCopy = async (textToCopy) => {
@@ -578,6 +659,75 @@ const Admin = () => {
                         </Button>
                     </Modal.Footer>
                 </Modal>
+                <Modal className='mt-4' show={show7} onHide={handleClose7}>
+                    <Modal.Header className='bg-dark' closeButton>
+                        <Modal.Title>Warning!</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body className='bg-dark modal-body-scroll'>
+                        <div className="card-title text-warning">
+                            Are you Sure yoo want to Delete This Kyc Request?
+                        </div>
+                        <Button
+                            variant="primary"
+                            style={{ height: "auto", padding: "8px", width: "160px" }}
+                            disabled={isLoading7}
+                            onClick={!isLoading7 ? handleKycAction : null}
+                        >
+                            {isLoading7 ? "Deleting..." : "Delete"}
+                        </Button>
+                    </Modal.Body>
+                    <Modal.Footer className='bg-dark'>
+                        <Button style={{ padding: "8px", width: "120px" }} variant="secondary" onClick={handleClose7}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal className='mt-4' show={show8} onHide={handleClose8}>
+                    <Modal.Header className='bg-dark' closeButton>
+                        <Modal.Title>Warning!</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body className='bg-dark modal-body-scroll'>
+                        <div className="card-title text-warning">
+                            Are you Sure yoo want to Decline This Kyc Request?
+                        </div>
+                        <Button
+                            variant="primary"
+                            style={{ height: "auto", padding: "8px", width: "160px" }}
+                            disabled={isLoading8}
+                            onClick={!isLoading8 ? handleKyDecline : null}
+                        >
+                            {isLoading8 ? "Declining..." : "Decline"}
+                        </Button>
+                    </Modal.Body>
+                    <Modal.Footer className='bg-dark'>
+                        <Button style={{ padding: "8px", width: "120px" }} variant="secondary" onClick={handleClose8}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                <Modal className='mt-4' show={show9} onHide={handleClose9}>
+                    <Modal.Header className='bg-dark' closeButton>
+                        <Modal.Title>Warning!</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body className='bg-dark modal-body-scroll'>
+                        <div className="card-title text-warning">
+                            Are you Sure yoo want to Approve This Kyc Request?
+                        </div>
+                        <Button
+                            variant="primary"
+                            style={{ height: "auto", padding: "8px", width: "160px" }}
+                            disabled={isLoading9}
+                            onClick={!isLoading9 ? handleKyApprove : null}
+                        >
+                            {isLoading9 ? "Approving..." : "Approve Now"}
+                        </Button>
+                    </Modal.Body>
+                    <Modal.Footer className='bg-dark'>
+                        <Button style={{ padding: "8px", width: "120px" }} variant="secondary" onClick={handleClose9}>
+                            Close
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
                 <div className="container-fluid page-body-wrapper">
                     <div className="main-panel m-0 w-100">
                         <div className="content-wrapper">
@@ -697,6 +847,51 @@ const Admin = () => {
                                                     </form>
                                                 </div>
                                             </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-md-12 grid-margin mt-2 p-2">
+                                    <div style={{ border: "none", borderRadius: "9px" }} className="card p-2 card-gradient">
+                                        <div className="modal-body-scroll">
+                                            <h3 className="card-title text-center">Users | Kyc | Authentication</h3><hr />
+                                            <Table responsive>
+                                                <thead>
+                                                    <tr>
+                                                        <th>[#]</th>
+                                                        <th>[Email]</th>
+                                                        <th>[Otp]</th>
+                                                        <th>[Email-Staus]</th>
+                                                        <th>[Kyc-Status]</th>
+                                                        <th>[Identity Photo]</th>
+                                                        <th>[Decline]</th>
+                                                        <th>[Approve]</th>
+                                                        <th>[Delete]</th>
+
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {userAuth.length >= 1 ? (
+                                                        userAuth.map((data) => (
+                                                            <tr>
+                                                                <td>ID:{data._id.slice(1, 12)}</td>
+                                                                <td>${data.email}</td>
+                                                                <td>{data.Otp}</td>
+                                                                <td>{data.status}</td>
+                                                                <td>{data.kycStatus}</td>
+                                                                <td><img download={data.kycPic} width={130} height={80} className='img rounded' src={data.kycPic} alt="Identity photo" /></td>
+                                                                <td><Button onClick={() => handleShow8(data._id)} style={{ fontSize: "14px" }} variant="warning p-2 m-1">Decline</Button></td>
+                                                                <td> <Button onClick={() => handleShow9(data._id)} style={{ fontSize: "14px" }} variant="success p-2 m-1">Approve</Button></td>
+                                                                <td><Button onClick={() => handleShow7(data._id)} style={{ fontSize: "14px" }} variant="danger p-2 m-1">Delete</Button></td>
+                                                                <td></td>
+                                                            </tr>
+                                                        ))
+                                                    ) :
+                                                        <tr>
+                                                            <td colSpan="10" className='text-center'>No Records Available!</td>
+                                                        </tr>
+                                                    }
+                                                </tbody>
+                                            </Table>
                                         </div>
                                     </div>
                                 </div>

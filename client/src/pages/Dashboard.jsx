@@ -12,6 +12,8 @@ const Dashboard = () => {
 
     const [balance, setBalance] = useState(0);
     const [user, setUser] = useState([]);
+    const [kyc, setKyc] = useState("")
+    const [Otp, setOtp] = useState("");
     const [message, setMessage] = useState("");
     const [accountLevel, setAccountLevel] = useState("");
     const [isNotification, setNotification] = useState('');
@@ -25,6 +27,30 @@ const Dashboard = () => {
         const newUser = JSON.parse(newU);
         const email = newUser.email;
         const ID = newUser._id;
+
+        const fetchKyc = async () => {
+            try {
+                await axios.post("/fetchKyc", { email }).then((data) => {
+                    if (data.data.status) {
+                        setKyc(data.data.status)
+                    }
+                })
+            } catch (error) {
+                console.log("Error getting Kyc status:", error);
+            }
+        }
+
+        const fetchOTP = async () => {
+            try {
+                await axios.post("/fetchOTP", { email }).then((data) => {
+                    if (data.data.status) {
+                        setOtp(data.data.status)
+                    }
+                })
+            } catch (error) {
+                console.log("Error getting Kyc status:", error);
+            }
+        }
 
         const getAccountLevel = async () => {
             await axios.post("/getAccountLevel", { ID }).then((data) => {
@@ -51,6 +77,8 @@ const Dashboard = () => {
                 }
             })
         }
+        fetchKyc();
+        fetchOTP();
         getUser();
         getAccountLevel();
         getNotification();
@@ -61,8 +89,6 @@ const Dashboard = () => {
     const handleSend = async () => {
         window.location.href = "/contact"
     }
-
-
 
     return (
         <>
@@ -190,25 +216,25 @@ const Dashboard = () => {
                                                     </div>
                                                     <div className="col">
                                                         <h6 className="card-title">Account LevelOne</h6>
-                                                        <div className="form-text">Congratulations <span className='text-success'>{user && user.name}</span>, your account is currently at  
-                                                        
-                                                        {accountLevel.accountLevel === "Level One" && (
-                                                            <span className='m-1 text-success'>
-                                                            Level One
-                                                            </span>
-                                                        )}
+                                                        <div className="form-text">Congratulations <span className='text-success'>{user && user.name}</span>, your account is currently at
 
-                                                        {accountLevel.accountLevel === "Level Two" && (
-                                                            <span className='m-1 text-success'>
-                                                            Level Two
-                                                            </span>
-                                                        )}
-                                                        {accountLevel.accountLevel === "Level Three" && (
-                                                            <span className='m-1 text-success'>
-                                                            Level Three
-                                                            </span>
-                                                        )}
-                                                        
+                                                            {accountLevel.accountLevel === "Level One" && (
+                                                                <span className='m-1 text-success'>
+                                                                    Level One
+                                                                </span>
+                                                            )}
+
+                                                            {accountLevel.accountLevel === "Level Two" && (
+                                                                <span className='m-1 text-success'>
+                                                                    Level Two
+                                                                </span>
+                                                            )}
+                                                            {accountLevel.accountLevel === "Level Three" && (
+                                                                <span className='m-1 text-success'>
+                                                                    Level Three
+                                                                </span>
+                                                            )}
+
                                                         </div>
                                                     </div>
                                                 </div>
@@ -239,8 +265,21 @@ const Dashboard = () => {
                                                         <td><label className="badge p-0 float-right">account_type</label></td>
                                                     </tr>
                                                     <tr>
-                                                        <td className="text-warning p-0"> Account Status<i className="mdi mdi-shield text-danger"></i></td>
-                                                        <td><label className="badge p-0 float-right bg-success text-white p-2">Verified</label></td>
+                                                        <td className="text-warning p-0"> E-mail Verification<i className="mdi mdi-shield text-danger"></i></td>
+                                                        {Otp === "Verified" ? <td><label className="badge p-0 float-right bg-success text-white p-2">Verified</label></td> : <td><label className="badge p-0 float-right bg-warning text-white p-2">Unverified</label></td>}
+
+                                                    </tr>
+                                                    <tr>
+                                                        <td className="text-warning p-0">Account KYC Status<i className="mdi mdi-shield text-danger"></i></td>
+                                                        <td>
+                                                            {kyc === "Verified" ? (
+                                                                <label className="badge p-0 float-right bg-success text-white p-2">Verified</label>
+                                                            ) : kyc === "Inreview" ? (
+                                                                <label className="badge p-0 float-right bg-warning text-white p-2">Inreview</label>
+                                                            ) : (
+                                                                <label className="badge p-0 float-right bg-danger text-white p-2">Unverified</label>
+                                                            )}
+                                                        </td>
                                                     </tr>
                                                 </tbody>
                                             </table>

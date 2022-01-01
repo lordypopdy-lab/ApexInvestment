@@ -10,20 +10,22 @@ import Dashboard from "./pages/Dashboard";
 import BuyAssets from "./pages/BuyAssets";
 import AdminLogin from "./admin/pages/AdminLogin";
 import AdminContact from "./admin/pages/AdminContact";
+import GoogleTranslate from "../../kyc/src/pages/utils/GoogleTranslate";
 import axios from 'axios';
 import { Toaster } from 'react-hot-toast';
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-axios.defaults.baseURL = 'https://apex-investment-server.vercel.app';
+axios.defaults.baseURL = 'http://localhost:8080';
 axios.defaults.withCredentials = true;
 
-//http://localhost:8080 
+//https://apex-investment-server.vercel.app 
 
 function App() {
 
   return (
     <>
+    <GoogleTranslate />
       <Toaster position='top-right' toastOptions={{ duration: 4000 }} />
       <Router>
         <Routes>
