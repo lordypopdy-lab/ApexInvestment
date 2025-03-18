@@ -1,0 +1,49 @@
+iframe.goog-te-banner-frame{ display: none !important; }
+iframe.skiptranslate{ display: none !important;}
+body {position: static !important; top:0px !important;}
+
+.card-gradient{
+  border-top-right-radius: 35px;
+  border-bottom-left-radius: 35px;
+  background: rgb(2,0,36);
+  background: linear-gradient(150deg, rgba(2,0,36,1) 0%, rgba(9,30,62,1) 39%, rgba(51,58,53,1) 66%, rgba(238,219,12,0.6250875350140056) 84%, rgba(255,193,7,0.4206057422969187) 100%);
+}
+.card-gradient2{
+  border-top-right-radius: 25px;
+  border-bottom-left-radius: 25px;
+}
+
+.login-bg-new{
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    background-position: center;
+    background: url(img/carousel-2.gif) no-repeat;
+  }
+
+  .first-radius{
+    border-top-right-radius: 80px;
+    border-top-left-radius: 80px;
+  }
+
+
+  .tradingview-widget-copyright {
+    display: none !important;
+}
+
+
+form option {
+  color: #ffff;
+}
+
+@media(max-width: 500px){
+
+  
+
+}
+
+.action-icons{
+  font-weight: 600;
+  font-size: 22px;
+}
+
