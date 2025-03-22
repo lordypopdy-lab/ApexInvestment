@@ -15,10 +15,10 @@ import { Toaster } from 'react-hot-toast';
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-axios.defaults.baseURL = 'https://apex-investment-server.vercel.app';
+axios.defaults.baseURL = 'http://localhost:8080';
 axios.defaults.withCredentials = true;
 
-//http://localhost:8080 
+//https://apex-investment-server.vercel.app 
 
 function App() {
 
