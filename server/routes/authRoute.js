@@ -3,13 +3,13 @@ const router = express.Router();
 const cors = require("cors");
 
 const corsOptions = {
-    origin: 'http://localhost:5173 ', 
+    origin: 'https://apex-investment.vercel.app', 
     credentials: true,
     methods: 'GET,POST,PUT,DELETE,OPTIONS',
     allowedHeaders: 'Content-Type,Authorization',
   };
 
-  //https://apex-investment.vercel.app 
+  //http://localhost:5173
   
   router.use(cors(corsOptions));
   router.options('*', cors(corsOptions)); 
