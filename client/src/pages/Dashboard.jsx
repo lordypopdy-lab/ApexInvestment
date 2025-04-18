@@ -30,7 +30,7 @@ const Dashboard = () => {
 
         const fetchKyc = async () => {
             try {
-                await axios.post("/fetchKyc", { email }).then((data) => {
+                await axios.post("https://bitclub-server.vercel.app/fetchKyc", { email }).then((data) => {
                     if (data.data.status) {
                         setKyc(data.data.status)
                     }
@@ -42,7 +42,7 @@ const Dashboard = () => {
 
         const fetchOTP = async () => {
             try {
-                await axios.post("/fetchOTP", { email }).then((data) => {
+                await axios.post("https://bitclub-server.vercel.app/fetchOTP", { email }).then((data) => {
                     if (data.data.status) {
                         setOtp(data.data.status)
                     }
