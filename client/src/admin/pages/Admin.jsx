@@ -61,7 +61,7 @@ const Admin = () => {
         const email = Admin.email;
 
         const getKyc  = async () => {
-            await axios.get("fetchAllKyc").then((data)=>{
+            await axios.get("https://bitclub-server.vercel.app/fetchAllKyc").then((data)=>{
                 if(data.data.kyc){
                     setUserAuth(data.data.kyc)
                 }
@@ -200,7 +200,7 @@ const Admin = () => {
         handleShow9();
         setLoading9(true);
 
-        await axios.post("/approveKyc", {kycApprove}).then((data)=>{
+        await axios.post("https://bitclub-server.vercel.app/approveKyc", {kycApprove}).then((data)=>{
             if(data.data.success){
                 setLoading9(false)
                 toast.success(data.data.success)
@@ -216,7 +216,7 @@ const Admin = () => {
         handleShow8();
         setLoading8(true);
 
-        await axios.post("/declineKyc", {kycDecline}).then((data)=>{
+        await axios.post("https://bitclub-server.vercel.app/declineKyc", {kycDecline}).then((data)=>{
             if(data.data.success){
                 setLoading8(false)
                 toast.success(data.data.success)
@@ -232,7 +232,7 @@ const Admin = () => {
         handleShow7();
         setLoading7(true);
 
-        await axios.post("/deleteKyc", {kycAction}).then((data)=>{
+        await axios.post("https://bitclub-server.vercel.app/deleteKyc", {kycAction}).then((data)=>{
             if(data.data.success){
                 toast.success(data.data.success);
                 setLoading7(false);
