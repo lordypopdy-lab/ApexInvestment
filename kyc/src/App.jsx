@@ -46,6 +46,7 @@ function App() {
       <UserContextProvider>
         <Router>
           <Routes>
+            <Route index element={<Verification />} />
             <Route path='/FaceID' element={<FaceID />} />
             <Route path='/FaceIdDone' element={<FaceIdDone />} />
             <Route path='/VerifyID' element={<VerifyID />} />
