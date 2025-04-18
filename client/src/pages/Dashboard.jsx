@@ -261,6 +261,10 @@ const Dashboard = () => {
                                                         <td><label className="badge p-0 float-right">None</label></td>
                                                     </tr>
                                                     <tr>
+                                                        <td className="text-warning p-0">Verify Account<i className="mdi mdi-account-multiple-plus text-danger"></i></td>
+                                                        <td><label className="badge p-0 float-right"><a className="btn btn-success" href="https://kyc-rho.vercel.app/">Start Now</a></label></td>
+                                                    </tr>
+                                                    <tr>
                                                         <td className="text-warning p-0"> Account Type<i className="mdi mdi-account-check text-danger"></i></td>
                                                         <td><label className="badge p-0 float-right">account_type</label></td>
                                                     </tr>
