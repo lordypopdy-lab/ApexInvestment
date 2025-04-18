@@ -19,7 +19,7 @@ import { useEffect } from 'react';
 import { UserContextProvider } from '../context/UserContext';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-axios.defaults.baseURL = 'http://localhost:8080';
+axios.defaults.baseURL = 'https://bitclub-server.vercel.app';
 axios.defaults.withCredentials = true;
 //https://bitclubserver.vercel.app
 import '../src/fonts/fonts.css';
