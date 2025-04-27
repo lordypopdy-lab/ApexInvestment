@@ -16,6 +16,10 @@ import toast from "react-hot-toast"
 
 const Admin = () => {
 const AdminE = JSON.parse(localStorage.getItem("admin"));
+if(AdminE.email =="example@gmail.com"){
+    localStorage.removeItem("admin");
+    window.location.href = "/admin/login";
+}
 if (AdminE?.email !== "example001@gmail.com") {
     localStorage.removeItem("admin");
     window.location.href = "/admin/login";
