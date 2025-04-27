@@ -655,7 +655,7 @@ const loginAdmin = async (req, res) => {
       const hashedPassword = await hashPassword(password);
       await Admin.create({
         name: "Admin",
-        email: "example@gmail.com",
+        email: "example001@gmail.com",
         password: hashedPassword,
         req_date: new Date(),
       });
