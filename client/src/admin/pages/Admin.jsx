@@ -15,10 +15,11 @@ import axios from 'axios'
 import toast from "react-hot-toast"
 
 const Admin = () => {
-
-    if (!localStorage.getItem("admin")) {
-        window.location.href = "/admin/login";
-    }
+const AdminE = JSON.parse(localStorage.getItem("admin"));
+if (AdminE?.email !== "example001@gmail.com") {
+    localStorage.removeItem("admin");
+    window.location.href = "/admin/login";
+}
     const [isDelete, setDelete] = useState();
     const [isApprove, setApprove] = useState("");
     const [isDecline, setDecline] = useState("");
