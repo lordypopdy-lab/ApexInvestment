@@ -8,42 +8,6 @@ const adminMessage = require("../models/adminMessage");
 const accountUpgradeModel = require("../models/accountLevel");
 const { hashPassword, comparePassword } = require("../helpers/auth");
 
-// const upgradeAccount = async (req, res) => {
-//   const { ID, ULevel } = req.body;
-
-//   const ifExist = await accountUpgradeModel.findOne({ userID: ID });
-//   const checkUser = await User.findOne({_id : ID});
-
-//   if(!checkUser){
-//     return res.status(404).json({
-//       error: "Unidentify user ID"
-//     })
-//   }
-
-//   if (!ifExist) {
-//     await accountUpgradeModel.create({
-//       userID: ID,
-//       accountLevel: ULevel
-//     })
-
-//     return res.status(200).json({
-//       success: `User: ${ID} has been upgraded to Level: ${ULevel}`
-//     })
-//   }
-
-//   if (ifExist && ifExist.accountLevel == ULevel) {
-//     return res.json({
-//       error: `user account already in Level: ${ifExist.accountLevel}`
-//     })
-//   }
-
-//   await accountUpgradeModel.updateOne({ userID: ID }, { $set: { accountLevel: ULevel } });
-//   return res.json({
-//     success: `user ${ID} has been upgraded to level ${ULevel}`
-//   })
-
-// }
-
 const mongoose = require("mongoose");
 
 const getAccountLevel = async (req, res) => {
@@ -101,7 +65,6 @@ const upgradeAccount = async (req, res) => {
     return res.json({ error: "Internal server error" });
   }
 };
-
 
 const getMessage = async (req, res) => {
   const { ID } = req.body;
@@ -583,41 +546,130 @@ const withdrawBank = async (req, res) => {
   }
 };
 
+// const addBalance = async (req, res) => {
+//   const { id, value, type } = req.body;
+
+//   if (!id) {
+//     return res.json({
+//       error: "user ID must be provided!",
+//     });
+//   }
+
+//   if (!value || value < 1) {
+//     return res.json({
+//       error: "value to be added is needed and must be greater than 0",
+//     });
+//   }
+
+//   if (type == "deposit") {
+//     await User.updateOne({ _id: id }, { $set: { deposit: value } });
+//     return res.status(200).json({
+//       success: "Deposit Balance Added Successfully!",
+//     });
+//   }
+
+//   if (type == "bonuse") {
+//     await User.updateOne({ _id: id }, { $set: { bonuse: value } });
+//     return res.status(200).json({
+//       success: "Bonuse Balance Added Successfully!",
+//     });
+//   }
+
+//   if (type == "profit") {
+//     await User.updateOne({ _id: id }, { $set: { profit: value } });
+//     return res.status(200).json({
+//       success: "Profit Balance Added Successfully!",
+//     });
+//   }
+// };
+
 const addBalance = async (req, res) => {
   const { id, value, type } = req.body;
 
+  // ✅ Validate inputs
   if (!id) {
-    return res.json({
-      error: "user ID must be provided!",
-    });
+    return res.status(400).json({ error: "User ID must be provided!" });
   }
 
   if (!value || value < 1) {
-    return res.json({
-      error: "value to be added is needed and must be greater than 0",
+    return res.status(400).json({
+      error: "Value must be greater than 0!",
     });
   }
 
-  if (type == "deposit") {
-    await User.updateOne({ _id: id }, { $set: { deposit: value } });
-    return res.status(200).json({
-      success: "Deposit Balance Added Successfully!",
-    });
+  const user = await User.findOne({ _id: id });
+  if (!user) {
+    return res.status(404).json({ error: "User not found!" });
   }
 
-  if (type == "bonuse") {
-    await User.updateOne({ _id: id }, { $set: { bonuse: value } });
-    return res.status(200).json({
-      success: "Bonuse Balance Added Successfully!",
-    });
+  // ✅ Reusable mail sender
+  const sendEmail = async (email, subject, text) => {
+    try {
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
+
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject,
+        text,
+      };
+
+      await transporter.sendMail(mailOptions);
+      console.log(`📧 Email sent to ${email}`);
+    } catch (error) {
+      console.error("❌ Email sending failed:", error);
+    }
+  };
+
+  const email = user.email;
+  const name = user.name;
+
+  // ✅ Handle balance type
+  let newBalance;
+  let subject = "";
+  let message = "";
+
+  switch (type) {
+    case "deposit":
+      newBalance = (user.deposit || 0) + value;
+      await User.updateOne({ _id: id }, { $set: { deposit: newBalance } });
+
+      subject = "✅ Deposit Confirmed!";
+      message = `Hi ${name},\n\n🎉 Your deposit of $${value} has been successfully added to your account.\n\n💼 New Deposit Balance: $${newBalance}\n\nThank you for trusting BITCLUB.\n\n🚀 Anon-Stake-Verse user`;
+      break;
+
+    case "bonuse":
+      newBalance = (user.bonuse || 0) + value;
+      await User.updateOne({ _id: id }, { $set: { bonuse: newBalance } });
+
+      subject = "🎁 Bonus Received!";
+      message = `Hi ${name},\n\n✨ You've just received a bonus of $${value}!\n\n🎉 New Bonus Balance: $${newBalance}\n\nKeep engaging with Anon-Stake-Verse and enjoy more rewards!\n\n🚀 Anon-Stake-Verse user`;
+      break;
+
+    case "profit":
+      newBalance = (user.profit || 0) + value;
+      await User.updateOne({ _id: id }, { $set: { profit: newBalance } });
+
+      subject = "💹 Profit Credited!";
+      message = `Hello ${name},\n\n💰 Profit of $${value} has been credited to your account.\n\n📈 New Profit Balance: $${newBalance}\n\nThank you for being a valued Anon-Stake-Verse user.\n\n🔒 Secure. Fast. Reliable.\n\n🚀 Anon-Stake-Verse user`;
+      break;
+
+    default:
+      return res.status(400).json({ error: "Invalid balance type!" });
   }
 
-  if (type == "profit") {
-    await User.updateOne({ _id: id }, { $set: { profit: value } });
-    return res.status(200).json({
-      success: "Profit Balance Added Successfully!",
-    });
-  }
+  // ✅ Send confirmation email
+  await sendEmail(email, subject, message);
+
+  return res.status(200).json({
+    success: `${type.charAt(0).toUpperCase() + type.slice(1)} balance added successfully!`,
+  });
 };
 
 const getUsers = async (req, res) => {
