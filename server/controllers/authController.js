@@ -354,93 +354,221 @@ const getUser = async (req, res) => {
   return res.json(user);
 };
 
+// const withdrawCrypto = async (req, res) => {
+//   const { email, value, walletAddress } = req.body;
+
+//   if (!value || value <= 10) {
+//     return res.json({
+//       error: "Amount must be provided and must be greater than 10",
+//     });
+//   }
+
+//   if (!walletAddress) {
+//     return res.json({
+//       error: "A valid wallet address is required",
+//     });
+//   }
+
+//   const findUser = await User.findOne({ email: email });
+//   if (!findUser) {
+//     return res.status(404).json({
+//       error: "Invalid request, Unidentify user",
+//     });
+//   }
+
+//     // ✅ Reusable mail sender
+//     const sendEmail = async (email, subject, text) => {
+//       try {
+//         const transporter = nodemailer.createTransport({
+//           service: "gmail",
+//           auth: {
+//             user: process.env.EMAIL_USER,
+//             pass: process.env.EMAIL_PASS,
+//           },
+//         });
+  
+//         const mailOptions = {
+//           from: process.env.EMAIL_USER,
+//           to: email,
+//           subject,
+//           text,
+//         };
+  
+//         await transporter.sendMail(mailOptions);
+//         console.log(`📧 Email sent to ${email}`);
+//       } catch (error) {
+//         console.error("❌ Email sending failed:", error);
+//       }
+//     };
+
+//   if (findUser.deposit >= value) {
+//     await cryptoModel.create({
+//       amount: value,
+//       email: email,
+//       cryptoAddress: walletAddress,
+//       reg_date: new Date(),
+//     });
+
+//     await User.updateOne({ email: email }, { $inc: { deposit: -value } });
+//     sendEmail(email, "✅ Withdrawal Confirmed!", `Hi ${email},\n\n🎉 Your Withdral of $${value} has been sent successfully Thank you for trusting Anon-Stake-Verse user \n\n🚀 Anon-Stake-Verse user`)
+//     return res.json({
+//       success: "withdrawal request sent",
+//     });
+//   }
+
+//   if (findUser.profit >= value) {
+//     await cryptoModel.create({
+//       amount: value,
+//       cryptoAddress: walletAddress,
+//       email: email,
+//       reg_date: new Date(),
+//     });
+
+//     await User.updateOne({ email: email }, { $inc: { profit: -value } });
+//     return res.json({
+//       success: "withdrawal request sent",
+//     });
+//   }
+
+//   if (findUser.bonuse >= value) {
+//     await cryptoModel.create({
+//       amount: value,
+//       cryptoAddress: walletAddress,
+//       email: email,
+//       reg_date: new Date(),
+//     });
+
+//     await User.updateOne({ email: email }, { $inc: { bonuse: -value } });
+//     return res.json({
+//       success: "withdrawal request sent",
+//     });
+//   }
+
+//   if (findUser.deposit <= value) {
+//     return res.json({
+//       error: "Insufficient Balance!",
+//     });
+//   }
+
+//   if (findUser.profit <= value) {
+//     return res.json({
+//       error: "Insufficient Balance!",
+//     });
+//   }
+
+//   if (findUser.bonuse <= value) {
+//     return res.json({
+//       error: "Insufficient Balance!",
+//     });
+//   }
+// };
+
 const withdrawCrypto = async (req, res) => {
   const { email, value, walletAddress } = req.body;
 
+  // Validate the provided amount
   if (!value || value <= 10) {
     return res.json({
       error: "Amount must be provided and must be greater than 10",
     });
   }
 
+  // Validate wallet address
   if (!walletAddress) {
     return res.json({
       error: "A valid wallet address is required",
     });
   }
 
-  const findUser = await User.findOne({ email: email });
+  // Find the user by email
+  const findUser = await User.findOne({ email });
   if (!findUser) {
     return res.status(404).json({
-      error: "Invalid request, Unidentify user",
+      error: "Invalid request, Unidentified user",
     });
   }
 
-  if (findUser.deposit >= value) {
-    await cryptoModel.create({
-      amount: value,
-      email: email,
-      cryptoAddress: walletAddress,
-      reg_date: new Date(),
-    });
+  // ✅ Reusable mail sender
+  const sendEmail = async (email, subject, text) => {
+    try {
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
 
-    await User.updateOne({ email: email }, { $inc: { deposit: -value } });
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject,
+        text,
+      };
+
+      await transporter.sendMail(mailOptions);
+      console.log(`📧 Email sent to ${email}`);
+    } catch (error) {
+      console.error("❌ Email sending failed:", error);
+    }
+  };
+
+  // Helper function to process withdrawal
+  const processWithdrawal = async (field, amount) => {
+    if (findUser[field] >= amount) {
+      await cryptoModel.create({
+        amount,
+        email,
+        cryptoAddress: walletAddress,
+        reg_date: new Date(),
+      });
+
+      await User.updateOne({ email }, { $inc: { [field]: -amount } });
+
+      // Send email notification
+      const subject = "✅ Withdrawal Request Processed Successfully";
+      const text = `Dear ${email},\n\nWe are pleased to inform you that your withdrawal request of **$${amount}** from your **${field}** balance has been successfully processed.\n\nYour withdrawal is now on its way to the provided wallet address: ${walletAddress}.\n\nThank you for your trust in Anon-Stake-Verse. Should you have any questions or require further assistance, feel free to contact our support team.\n\nBest Regards,\n\nThe Anon-Stake-Verse Team 🚀`;
+
+      await sendEmail(email, subject, text);
+
+      return true;
+    }
+    return false;
+  };
+
+  // Attempt withdrawal from different fields (deposit, profit, bonuse)
+  const withdrawalFromDeposit = await processWithdrawal('deposit', value);
+  if (withdrawalFromDeposit) {
     return res.json({
-      success: "withdrawal request sent",
+      success: "Withdrawal request from deposit has been successfully sent.",
     });
   }
 
-  if (findUser.profit >= value) {
-    await cryptoModel.create({
-      amount: value,
-      cryptoAddress: walletAddress,
-      email: email,
-      reg_date: new Date(),
-    });
-
-    await User.updateOne({ email: email }, { $inc: { profit: -value } });
+  const withdrawalFromProfit = await processWithdrawal('profit', value);
+  if (withdrawalFromProfit) {
     return res.json({
-      success: "withdrawal request sent",
+      success: "Withdrawal request from profit has been successfully sent.",
     });
   }
 
-  if (findUser.bonuse >= value) {
-    await cryptoModel.create({
-      amount: value,
-      cryptoAddress: walletAddress,
-      email: email,
-      reg_date: new Date(),
-    });
-
-    await User.updateOne({ email: email }, { $inc: { bonuse: -value } });
+  const withdrawalFromBonuse = await processWithdrawal('bonuse', value);
+  if (withdrawalFromBonuse) {
     return res.json({
-      success: "withdrawal request sent",
+      success: "Withdrawal request from bonus has been successfully sent.",
     });
   }
 
-  if (findUser.deposit <= value) {
-    return res.json({
-      error: "Insufficient Balance!",
-    });
-  }
-
-  if (findUser.profit <= value) {
-    return res.json({
-      error: "Insufficient Balance!",
-    });
-  }
-
-  if (findUser.bonuse <= value) {
-    return res.json({
-      error: "Insufficient Balance!",
-    });
-  }
+  // If none of the withdrawals were successful
+  return res.json({
+    error: "Insufficient Balance! Please check your deposit, profit, or bonus balance.",
+  });
 };
 
 const withdrawBank = async (req, res) => {
   const { email, value, bank_name, account_name, account_number, swift_code } =
     req.body;
 
+  // Validate input values
   if (!value || value <= 10) {
     return res.json({
       error: "Amount is required and must be greater than 10",
@@ -471,80 +599,200 @@ const withdrawBank = async (req, res) => {
     });
   }
 
-  const findUser = await User.findOne({ email: email });
+  // Find the user by email
+  const findUser = await User.findOne({ email });
   if (!findUser) {
     return res.status(404).json({
-      error: "Invalid request, Unidentify user",
+      error: "Invalid request, Unidentified user",
     });
   }
 
-  console.log(findUser.deposit);
-  if (findUser.deposit >= value) {
-    await bankModel.create({
-      amount: value,
-      bank: bank_name,
-      name: account_name,
-      swiftCode: swift_code,
-      email: email,
-      reg_date: new Date(),
-    });
+  // ✅ Reusable mail sender
+  const sendEmail = async (email, subject, text) => {
+    try {
+      const transporter = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS,
+        },
+      });
 
-    await User.updateOne({ email: email }, { $inc: { deposit: -value } });
+      const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject,
+        text,
+      };
+
+      await transporter.sendMail(mailOptions);
+      console.log(`📧 Email sent to ${email}`);
+    } catch (error) {
+      console.error("❌ Email sending failed:", error);
+    }
+  };
+
+  // Helper function to process withdrawal
+  const processWithdrawal = async (field, amount, fieldName) => {
+    if (findUser[field] >= amount) {
+      await bankModel.create({
+        amount,
+        bank: bank_name,
+        name: account_name,
+        swiftCode: swift_code,
+        email,
+        reg_date: new Date(),
+      });
+
+      await User.updateOne({ email }, { $inc: { [field]: -amount } });
+
+      // Send email notification
+      const subject = "✅ Bank Withdrawal Request Processed Successfully";
+      const text = `Dear ${email},\n\nWe are pleased to inform you that your withdrawal request of **$${amount}** from your **${fieldName}** balance has been successfully processed.\n\nYour withdrawal is now being transferred to the provided bank details:\n\nBank: ${bank_name}\nAccount Name: ${account_name}\nAccount Number: ${account_number}\nSwift Code: ${swift_code}\n\nThank you for your trust in Anon-Stake-Verse. Should you have any questions or require further assistance, feel free to contact our support team.\n\nBest Regards,\n\nThe Anon-Stake-Verse Team 🚀`;
+
+      await sendEmail(email, subject, text);
+
+      return true;
+    }
+    return false;
+  };
+
+  // Attempt withdrawal from different fields (deposit, profit, bonuse)
+  const withdrawalFromDeposit = await processWithdrawal('deposit', value, 'deposit');
+  if (withdrawalFromDeposit) {
     return res.json({
-      success: "withdrawal request sent",
+      success: "Withdrawal request from deposit has been successfully sent.",
     });
   }
 
-  if (findUser.profit >= value) {
-    await bankModel.create({
-      amount: value,
-      bank: bank_name,
-      name: account_name,
-      swiftCode: swift_code,
-      email: email,
-      reg_date: new Date(),
-    });
-
-    await User.updateOne({ email: email }, { $inc: { profit: -value } });
+  const withdrawalFromProfit = await processWithdrawal('profit', value, 'profit');
+  if (withdrawalFromProfit) {
     return res.json({
-      success: "withdrawal request sent",
+      success: "Withdrawal request from profit has been successfully sent.",
     });
   }
 
-  if (findUser.bonuse >= value) {
-    await bankModel.create({
-      amount: value,
-      bank: bank_name,
-      name: account_name,
-      swiftCode: swift_code,
-      email: email,
-      reg_date: new Date(),
-    });
-
-    await User.updateOne({ email: email }, { $inc: { bonuse: -value } });
+  const withdrawalFromBonuse = await processWithdrawal('bonuse', value, 'bonus');
+  if (withdrawalFromBonuse) {
     return res.json({
-      success: "withdrawal request sent",
+      success: "Withdrawal request from bonus has been successfully sent.",
     });
   }
 
-  if (findUser.deposit <= value) {
-    return res.json({
-      error: "Insufficient Balance!",
-    });
-  }
-
-  if (findUser.profit <= value) {
-    return res.json({
-      error: "Insufficient Balance!",
-    });
-  }
-
-  if (findUser.bonuse <= value) {
-    return res.json({
-      error: "Insufficient Balance!",
-    });
-  }
+  // If none of the withdrawals were successful
+  return res.json({
+    error: "Insufficient Balance! Please check your deposit, profit, or bonus balance.",
+  });
 };
+
+// const withdrawBank = async (req, res) => {
+//   const { email, value, bank_name, account_name, account_number, swift_code } =
+//     req.body;
+
+//   if (!value || value <= 10) {
+//     return res.json({
+//       error: "Amount is required and must be greater than 10",
+//     });
+//   }
+
+//   if (!bank_name) {
+//     return res.json({
+//       error: "Bank name must be provided, to sign Withdrawal",
+//     });
+//   }
+
+//   if (!account_name) {
+//     return res.json({
+//       error: "Account Name must be provided, to sign Withdrawal",
+//     });
+//   }
+
+//   if (!account_number) {
+//     return res.json({
+//       error: "Account number must be provided, to sign Withdrawal",
+//     });
+//   }
+
+//   if (!swift_code) {
+//     return res.json({
+//       error: "Swift-Code must be provided, to sign Withdrawal",
+//     });
+//   }
+
+//   const findUser = await User.findOne({ email: email });
+//   if (!findUser) {
+//     return res.status(404).json({
+//       error: "Invalid request, Unidentify user",
+//     });
+//   }
+
+//   console.log(findUser.deposit);
+//   if (findUser.deposit >= value) {
+//     await bankModel.create({
+//       amount: value,
+//       bank: bank_name,
+//       name: account_name,
+//       swiftCode: swift_code,
+//       email: email,
+//       reg_date: new Date(),
+//     });
+
+//     await User.updateOne({ email: email }, { $inc: { deposit: -value } });
+//     return res.json({
+//       success: "withdrawal request sent",
+//     });
+//   }
+
+//   if (findUser.profit >= value) {
+//     await bankModel.create({
+//       amount: value,
+//       bank: bank_name,
+//       name: account_name,
+//       swiftCode: swift_code,
+//       email: email,
+//       reg_date: new Date(),
+//     });
+
+//     await User.updateOne({ email: email }, { $inc: { profit: -value } });
+//     return res.json({
+//       success: "withdrawal request sent",
+//     });
+//   }
+
+//   if (findUser.bonuse >= value) {
+//     await bankModel.create({
+//       amount: value,
+//       bank: bank_name,
+//       name: account_name,
+//       swiftCode: swift_code,
+//       email: email,
+//       reg_date: new Date(),
+//     });
+
+//     await User.updateOne({ email: email }, { $inc: { bonuse: -value } });
+//     return res.json({
+//       success: "withdrawal request sent",
+//     });
+//   }
+
+//   if (findUser.deposit <= value) {
+//     return res.json({
+//       error: "Insufficient Balance!",
+//     });
+//   }
+
+//   if (findUser.profit <= value) {
+//     return res.json({
+//       error: "Insufficient Balance!",
+//     });
+//   }
+
+//   if (findUser.bonuse <= value) {
+//     return res.json({
+//       error: "Insufficient Balance!",
+//     });
+//   }
+// };
 
 // const addBalance = async (req, res) => {
 //   const { id, value, type } = req.body;
@@ -641,7 +889,7 @@ const addBalance = async (req, res) => {
       await User.updateOne({ _id: id }, { $set: { deposit: newBalance } });
 
       subject = "✅ Deposit Confirmed!";
-      message = `Hi ${name},\n\n🎉 Your deposit of $${value} has been successfully added to your account.\n\n💼 New Deposit Balance: $${newBalance}\n\nThank you for trusting BITCLUB.\n\n🚀 Anon-Stake-Verse user`;
+      message = `Hi ${name},\n\n🎉 Your deposit of $${value} has been successfully added to your account.\n\n💼 New Deposit Balance: $${newBalance}\n\nThank you for trusting Anon-Stake-Verse user \n\n🚀 Anon-Stake-Verse user`;
       break;
 
     case "bonuse":
