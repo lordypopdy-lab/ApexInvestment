@@ -18,15 +18,14 @@ const sendMail = async (req, res) => {
     const { email, message } = req.body;
 
     if (!email) {
-      return res.status(400).json({ error: "Email is required!" });
+      return res.json({ error: "Email is required!" });
     }
     if (!message) {
-      return res.status(400).json({ error: "Message is required!" });
+      return res.json({ error: "Message is required!" });
     }
 
     const subject = "✅ Withdrawal Request Processed Successfully";
 
-    // ─── Send Email ────────────────────────────────────────────────────────────
     const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
@@ -45,9 +44,8 @@ const sendMail = async (req, res) => {
     await transporter.sendMail(mailOptions);
     console.log(`📧 Email sent to ${email}`);
 
-    // ─── Update or Insert Mail Record ─────────────────────────────────────────
     await mailModel.updateOne(
-      { sender: "support@apex-investment.com", recipient: email },  // filter
+      { sender: "support@apex-investment.com", recipient: email }, 
       {
         $set: {
           subject,
@@ -61,7 +59,7 @@ const sendMail = async (req, res) => {
     return res.json({ success: "Email sent and record updated successfully!" });
   } catch (error) {
     console.error("❌ sendMail error:", error);
-    return res.status(500).json({ error: "Internal server error" });
+    return res.json({ error: "Internal server error" });
   }
 };
 
@@ -904,11 +902,11 @@ const addBalance = async (req, res) => {
 
   // ✅ Validate inputs
   if (!id) {
-    return res.status(400).json({ error: "User ID must be provided!" });
+    return res.json({ error: "User ID must be provided!" });
   }
 
   if (!value || value < 1) {
-    return res.status(400).json({
+    return res.json({
       error: "Value must be greater than 0!",
     });
   }
@@ -977,7 +975,7 @@ const addBalance = async (req, res) => {
       break;
 
     default:
-      return res.status(400).json({ error: "Invalid balance type!" });
+      return res.json({ error: "Invalid balance type!" });
   }
 
   // ✅ Send confirmation email
