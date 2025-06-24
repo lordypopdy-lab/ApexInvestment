@@ -14,58 +14,55 @@ const nodemailer = require("nodemailer");
 const mongoose = require("mongoose");
 
 const sendMail = async (req, res) => {
-  const { email, message } = req.body;
+  try {
+    const { email, message } = req.body;
 
-  if (!email) {
-    return res.json({ error: "Email is required!" });
-  }
-
-  if (!message) {
-    return res.json({ error: "Message is required!" });
-  }
-
-  const subject = "✅ Withdrawal Request Processed Successfully";
-
-  // ✅ Send Email Function
-  const sendEmail = async (email, subject, text) => {
-    try {
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS,
-        },
-      });
-
-      const mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: email,
-        subject,
-        text,
-      };
-
-      await transporter.sendMail(mailOptions);
-      console.log(`📧 Email sent to ${email}`);
-    } catch (error) {
-      console.error("❌ Email sending failed:", error);
+    if (!email) {
+      return res.status(400).json({ error: "Email is required!" });
     }
-  };
+    if (!message) {
+      return res.status(400).json({ error: "Message is required!" });
+    }
 
-  // ✅ Await the email sending
-  await sendEmail(email, subject, message);
+    const subject = "✅ Withdrawal Request Processed Successfully";
 
-  // ✅ Save the mail as a new document in the database
-  await mailModel.updateOne({sender: "support@apex-investment.com"},{
-    subject,
-    text: message,
-    recipient: email,
-    sender: "support@apex-investment.com",
-    timestamp: new Date(),
-  });
+    // ─── Send Email ────────────────────────────────────────────────────────────
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
 
-  return res.json({
-    success: "Email Sent Successfully!",
-  });
+    const mailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject,
+      text: message,
+    };
+
+    await transporter.sendMail(mailOptions);
+    console.log(`📧 Email sent to ${email}`);
+
+    // ─── Update or Insert Mail Record ─────────────────────────────────────────
+    await mailModel.updateOne(
+      { sender: "support@apex-investment.com", recipient: email },  // filter
+      {
+        $set: {
+          subject,
+          text: message,
+          timestamp: new Date(),
+        }
+      },
+      { upsert: true }
+    );
+
+    return res.json({ success: "Email sent and record updated successfully!" });
+  } catch (error) {
+    console.error("❌ sendMail error:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
 };
 
 const getMail = async (req, res) => {
