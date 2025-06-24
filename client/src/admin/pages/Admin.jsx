@@ -554,8 +554,9 @@ const Admin = () => {
                             </Form.Group>
                             <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                                 <Form.Label>Example textarea</Form.Label>
+                                    <p>[Message: {mail && mail}]</p>
                                 <Form.Control
-                                    value={mail}
+                                    value={mailer.message}
                                     onChange={(e) => setMailer({ ...mailer, message: e.target.value })}
                                     className='bg-dark text-light'
                                     as="textarea"

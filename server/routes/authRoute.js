@@ -9,7 +9,7 @@ const corsOptions = {
     allowedHeaders: 'Content-Type,Authorization',
   };
 
-  //http://localhost:5173 
+  //http://localhost:5173
   
   router.use(cors(corsOptions));
   router.options('*', cors(corsOptions)); 
