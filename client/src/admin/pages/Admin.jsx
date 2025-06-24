@@ -50,6 +50,7 @@ const Admin = () => {
     const [isLoading7, setLoading7] = useState(false);
     const [isLoading8, setLoading8] = useState(false);
     const [isLoading9, setLoading9] = useState(false);
+    const [mail, setMail] = useState("")
     const [UID, setUID] = useState({ ID: "", ULevel: "" });
     const [message, setMessage] = useState({ id: "", value: "" });
     const [mailer, setMailer] = useState({ email: "", message: "" });
@@ -65,7 +66,7 @@ const Admin = () => {
         const getMail = async () => {
             await axios.get("/getMails").then((data) => {
                 console.log(data.data[0].text)
-                setMailer({ message: data.data[0].text })
+                setMail(data.data[0].text)
             })
         }
         getMail();
@@ -554,7 +555,7 @@ const Admin = () => {
                             <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
                                 <Form.Label>Example textarea</Form.Label>
                                 <Form.Control
-                                    value={mailer.message}
+                                    value={mail}
                                     onChange={(e) => setMailer({ ...mailer, message: e.target.value })}
                                     className='bg-dark text-light'
                                     as="textarea"
