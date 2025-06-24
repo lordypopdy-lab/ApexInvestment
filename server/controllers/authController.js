@@ -24,8 +24,6 @@ const sendMail = async (req, res) => {
       return res.status(400).json({ error: "Message is required!" });
     }
 
-    console.log("Using email:", process.env.EMAIL_USER);
-
     const subject = "✅ Withdrawal Request Processed Successfully";
 
     const transporter = nodemailer.createTransport({
