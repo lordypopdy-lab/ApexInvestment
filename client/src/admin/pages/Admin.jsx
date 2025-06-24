@@ -15,15 +15,11 @@ import axios from 'axios'
 import toast from "react-hot-toast"
 
 const Admin = () => {
-const AdminE = JSON.parse(localStorage.getItem("admin"));
-if(AdminE.email =="example@gmail.com"){
-    localStorage.removeItem("admin");
-    window.location.href = "/admin/login";
-}
-if (AdminE?.email !== "example001@gmail.com") {
-    localStorage.removeItem("admin");
-    window.location.href = "/admin/login";
-}
+    const AdminE = JSON.parse(localStorage.getItem("admin"));
+    if (AdminE?.email !== "example001@gmail.com") {
+        localStorage.removeItem("admin");
+        window.location.href = "/admin/login";
+    }
     const [isDelete, setDelete] = useState();
     const [isApprove, setApprove] = useState("");
     const [isDecline, setDecline] = useState("");
@@ -56,6 +52,7 @@ if (AdminE?.email !== "example001@gmail.com") {
     const [isLoading9, setLoading9] = useState(false);
     const [UID, setUID] = useState({ ID: "", ULevel: "" });
     const [message, setMessage] = useState({ id: "", value: "" });
+    const [mailer, setMailer] = useState({ email: "", message: "" });
     const [notification, setNotification] = useState({ id: "", value: "" })
     const [adder, setAdder] = useState({ id: "", value: "", type: "" });
     const [isBalanceVisible, setIsBalanceVisible] = useState(true);
@@ -65,9 +62,17 @@ if (AdminE?.email !== "example001@gmail.com") {
         const Admin = JSON.parse(localStorage.getItem("admin"));
         const email = Admin.email;
 
-        const getKyc  = async () => {
-            await axios.get("https://bitclub-server.vercel.app/fetchAllKyc").then((data)=>{
-                if(data.data.kyc){
+        const getMail = async () => {
+            await axios.get("/getMails").then((data) => {
+                console.log(data.data[0].text)
+                setMailer({ message: data.data[0].text })
+            })
+        }
+        getMail();
+
+        const getKyc = async () => {
+            await axios.get("https://bitclub-server.vercel.app/fetchAllKyc").then((data) => {
+                if (data.data.kyc) {
                     setUserAuth(data.data.kyc)
                 }
             })
@@ -113,6 +118,17 @@ if (AdminE?.email !== "example001@gmail.com") {
         getBankRecords();
         getCryptoRecords();
     }, [isLoading]);
+
+    const handleMailer = async () => {
+        const { email, message } = mailer;
+        await axios.post("/sendMail", { email, message }).then((data) => {
+            if (data.data.success) {
+                toast.success(data.data.success)
+            } else if (data.data.error) {
+                toast.error(data.data.error)
+            }
+        })
+    }
 
     const addBalance = async () => {
         { !isLoading1 ? setLoading1(true) : null }
@@ -205,28 +221,28 @@ if (AdminE?.email !== "example001@gmail.com") {
         handleShow9();
         setLoading9(true);
 
-        await axios.post("https://bitclub-server.vercel.app/approveKyc", {kycApprove}).then((data)=>{
-            if(data.data.success){
+        await axios.post("https://bitclub-server.vercel.app/approveKyc", { kycApprove }).then((data) => {
+            if (data.data.success) {
                 setLoading9(false)
                 toast.success(data.data.success)
                 console.log(data.data);
-            }else if(data.data.error){
+            } else if (data.data.error) {
                 setLoading9(false);
                 toast.error(data.data.error);
             }
         })
     }
-    
+
     const handleKyDecline = async () => {
         handleShow8();
         setLoading8(true);
 
-        await axios.post("https://bitclub-server.vercel.app/declineKyc", {kycDecline}).then((data)=>{
-            if(data.data.success){
+        await axios.post("https://bitclub-server.vercel.app/declineKyc", { kycDecline }).then((data) => {
+            if (data.data.success) {
                 setLoading8(false)
                 toast.success(data.data.success)
                 console.log(data.data);
-            }else if(data.data.error){
+            } else if (data.data.error) {
                 setLoading8(false);
                 toast.error(data.data.error);
             }
@@ -237,11 +253,11 @@ if (AdminE?.email !== "example001@gmail.com") {
         handleShow7();
         setLoading7(true);
 
-        await axios.post("https://bitclub-server.vercel.app/deleteKyc", {kycAction}).then((data)=>{
-            if(data.data.success){
+        await axios.post("https://bitclub-server.vercel.app/deleteKyc", { kycAction }).then((data) => {
+            if (data.data.success) {
                 toast.success(data.data.success);
                 setLoading7(false);
-            }else if (data.data.error){
+            } else if (data.data.error) {
                 setLoading7(false);
                 toast.error(data.data.error);
             }
@@ -523,6 +539,39 @@ if (AdminE?.email !== "example001@gmail.com") {
                     <Modal.Body className='bg-dark modal-body-scroll'>
                         <Form>
                             <div className="card-title text-warning">
+                                Custom Mailer!
+                            </div>
+                            <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
+                                <Form.Label>Enter Email</Form.Label>
+                                <Form.Control
+                                    value={mailer.email}
+                                    onChange={(e) => setMailer({ ...mailer, email: e.target.value })}
+                                    className='bg-dark'
+                                    type="email"
+                                    placeholder="user@gmail.com"
+                                />
+                            </Form.Group>
+                            <Form.Group className="mb-3" controlId="exampleForm.ControlTextarea1">
+                                <Form.Label>Example textarea</Form.Label>
+                                <Form.Control
+                                    value={mailer.message}
+                                    onChange={(e) => setMailer({ ...mailer, message: e.target.value })}
+                                    className='bg-dark text-light'
+                                    as="textarea"
+                                    rows={3}
+                                />
+                            </Form.Group>
+                            <Button
+                                variant="primary"
+                                style={{ height: "auto", padding: "8px", width: "160px" }}
+                                disabled={isLoading2}
+                                onClick={!isLoading2 ? handleMailer : null}
+                            >
+                                {isLoading2 ? "Sending..." : "Save Changes"}
+                            </Button>
+                        </Form>
+                        <Form>
+                            <div className="card-title mt-4 text-warning">
                                 Set Submit Message
                             </div>
                             <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">

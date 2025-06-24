@@ -10,7 +10,6 @@ import Dashboard from "./pages/Dashboard";
 import BuyAssets from "./pages/BuyAssets";
 import AdminLogin from "./admin/pages/AdminLogin";
 import AdminContact from "./admin/pages/AdminContact";
-import GoogleTranslate from "../../kyc/src/pages/utils/GoogleTranslate";
 import axios from 'axios';
 import { Toaster } from 'react-hot-toast';
 
@@ -25,7 +24,6 @@ function App() {
 
   return (
     <>
-    <GoogleTranslate />
       <Toaster position='top-right' toastOptions={{ duration: 4000 }} />
       <Router>
         <Routes>

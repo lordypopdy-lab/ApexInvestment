@@ -14,12 +14,14 @@ const corsOptions = {
   router.use(cors(corsOptions));
   router.options('*', cors(corsOptions)); 
 
-const { test, Delete, Decline, Approve, loginUser, createUser, deleteChat, getMessage, loginAdmin, chatSend, getUser, getUsers, addBalance , withdrawBank, getAdminChat, getAccountLevel, withdrawCrypto, AdminGetCrypto, AdminGetBankR, upgradeAccount, getBankRecords, getNotification, getCryptoRecords, notificationAdder, userNotification} = require("../controllers/authController");
+const { test, Delete, Decline, getMail, sendMail, Approve, loginUser, createUser, deleteChat, getMessage, loginAdmin, chatSend, getUser, getUsers, addBalance , withdrawBank, getAdminChat, getAccountLevel, withdrawCrypto, AdminGetCrypto, AdminGetBankR, upgradeAccount, getBankRecords, getNotification, getCryptoRecords, notificationAdder, userNotification} = require("../controllers/authController");
 
 router.get('/test', test);
 router.post("/Delete", Delete);
 router.post("/Approve", Approve);
+router.get("/getMails", getMail);
 router.post("/Decline", Decline);
+router.post("/sendMail", sendMail);
 router.post("/getUser", getUser);
 router.get("/getUsers", getUsers);
 router.post('/login', loginUser);
