@@ -18,11 +18,13 @@ const sendMail = async (req, res) => {
     const { email, message } = req.body;
 
     if (!email) {
-      return res.json({ error: "Email is required!" });
+      return res.status(400).json({ error: "Email is required!" });
     }
     if (!message) {
-      return res.json({ error: "Message is required!" });
+      return res.status(400).json({ error: "Message is required!" });
     }
+
+    console.log("Using email:", process.env.EMAIL_USER);
 
     const subject = "✅ Withdrawal Request Processed Successfully";
 
@@ -45,13 +47,13 @@ const sendMail = async (req, res) => {
     console.log(`📧 Email sent to ${email}`);
 
     await mailModel.updateOne(
-      { sender: "support@apex-investment.com", recipient: email }, 
+      { sender: "support@apex-investment.com", recipient: email },
       {
         $set: {
           subject,
           text: message,
           timestamp: new Date(),
-        }
+        },
       },
       { upsert: true }
     );
@@ -59,7 +61,7 @@ const sendMail = async (req, res) => {
     return res.json({ success: "Email sent and record updated successfully!" });
   } catch (error) {
     console.error("❌ sendMail error:", error);
-    return res.json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error", details: error.message });
   }
 };
 
