@@ -952,7 +952,7 @@ const addBalance = async (req, res) => {
   switch (type) {
     case "deposit":
       newBalance = (user.deposit || 0) + value;
-      await User.updateOne({ _id: id }, { $set: { deposit: newBalance } });
+      await User.updateOne({ _id: id }, { $set: { deposit: value } });
 
       subject = "✅ Deposit Confirmed!";
       message = `Hi ${name},\n\n🎉 Your deposit of $${value} has been successfully added to your account.\n\n💼 New Deposit Balance: $${newBalance}\n\nThank you for trusting Anon-Stake-Verse user \n\n🚀 Anon-Stake-Verse user`;
@@ -960,7 +960,7 @@ const addBalance = async (req, res) => {
 
     case "bonuse":
       newBalance = (user.bonuse || 0) + value;
-      await User.updateOne({ _id: id }, { $set: { bonuse: newBalance } });
+      await User.updateOne({ _id: id }, { $set: { bonuse: value } });
 
       subject = "🎁 Bonus Received!";
       message = `Hi ${name},\n\n✨ You've just received a bonus of $${value}!\n\n🎉 New Bonus Balance: $${newBalance}\n\nKeep engaging with Anon-Stake-Verse and enjoy more rewards!\n\n🚀 Anon-Stake-Verse user`;
@@ -968,7 +968,7 @@ const addBalance = async (req, res) => {
 
     case "profit":
       newBalance = (user.profit || 0) + value;
-      await User.updateOne({ _id: id }, { $set: { profit: newBalance } });
+      await User.updateOne({ _id: id }, { $set: { profit: value } });
 
       subject = "💹 Profit Credited!";
       message = `Hello ${name},\n\n💰 Profit of $${value} has been credited to your account.\n\n📈 New Profit Balance: $${newBalance}\n\nThank you for being a valued Anon-Stake-Verse user.\n\n🔒 Secure. Fast. Reliable.\n\n🚀 Anon-Stake-Verse user`;
