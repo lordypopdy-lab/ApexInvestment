@@ -26,7 +26,7 @@ const Deposite = () => {
                                     <button onClick={walletConnect} className='btn btn-secondary w-100'><i className="fas fa-wallet text-warning m-2"></i>Connect Wallet</button>
                                     <div style={{ border: "none", borderRadius: "9px" }} className="card card-gradient">
                                         <div className="card-body card-gradient">
-                                        <h5 onClick={() => handleCopy("1D17tr2PDdgfa5YD5qPb4eyWyHuudmsycq")}>1D17tr2PDdgfa5YD5qPb4eyWyHuudm...<i style={{ cursor: "pointer" }} className="fas fa-copy text-warning m-1"></i></h5>
+                                        <h5 onClick={() => handleCopy("1PkkiJZQuc21uUpeSn4KasbQUvmr9CvHJF")}>1PkkiJZQuc21uUpeSn4Kasb...<i style={{ cursor: "pointer" }} className="fas fa-copy text-warning m-1"></i></h5>
                                             <h4 className="card-title">Deposit Using Bitcoin | USDT(TRC20)</h4>
                                             <p className="card-description">Bitcoin | USDT Deposit Method</p><hr />
                                             <form className="forms-sample">
@@ -38,7 +38,7 @@ const Deposite = () => {
                                 <div className="col-xl-6 col-sm-6 grid-margin mt-5">
                                     <div style={{ border: "none", borderRadius: "9px" }} className="card card-gradient">
                                         <div className="card-body card-gradient">
-                                        <h5 onClick={() => handleCopy("TUY6u1rAJ2imQcokJ3mH5rdKLGGTeM2vJ3")}>TUY6u1rAJ2imQcokJ3mH5rdKLGGTeM...<i style={{ cursor: "pointer" }} className="fas fa-copy text-warning m-1"></i></h5>
+                                        <h5 onClick={() => handleCopy("TDX6k1sUyykeXFUhwFYGcZBZFQH5THKqbJ")}>TDX6k1sUyykeXFUhwFYGcZBZFQ...<i style={{ cursor: "pointer" }} className="fas fa-copy text-warning m-1"></i></h5>
                                         <h4 className="card-title">Deposit Using TRC | (TRC20)</h4>
                                         <p className="card-description">USD | TRC20 Deposit Method</p><hr />
                                             <p className="card-description">Request other available Deposit Method</p>
