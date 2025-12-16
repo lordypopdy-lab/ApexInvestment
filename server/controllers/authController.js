@@ -1031,6 +1031,14 @@ const loginAdmin = async (req, res) => {
     }
     //Check if password match
     const match = await comparePassword(password, user.password);
+
+    if (!match) {
+      return res.json({
+        error:
+          "password not match our database, password should be atleast six(6) character",
+      });
+    }
+    
     if (match) {
       jwt.sign(
         { name: user.name, email: user.email, id: user._id },
@@ -1041,12 +1049,6 @@ const loginAdmin = async (req, res) => {
           res.cookie("token", token).json(user);
         }
       );
-    }
-    if (!match) {
-      return res.json({
-        error:
-          "password not match our database, password should be atleast six(6) character",
-      });
     }
   } catch (error) {
     console.log(error);
