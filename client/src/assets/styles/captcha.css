@@ -1,0 +1,117 @@
+.captcha-success {
+  padding: 30px;
+  border-radius: 12px;
+  background: #1c2b1f;
+  border: 1px solid #2e4e34;
+  text-align: center;
+  color: #4ade80;
+  font-weight: 500;
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.success-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.captcha-container {
+  width: 360px;
+  padding: 28px;
+  border-radius: 14px;
+  background: rgba(20, 20, 25, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+  font-family: "Inter", sans-serif;
+  color: #e4e6eb;
+}
+
+.captcha-container h4 {
+  margin-bottom: 18px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  color: #f1f1f1;
+}
+
+.captcha-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(145deg, #1f1f25, #15151a);
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #2b2b35;
+}
+
+.captcha-text {
+  font-size: 22px;
+  letter-spacing: 3px;
+  font-weight: 600;
+  color: #d1d1ff;
+  user-select: none;
+}
+
+.refresh-btn {
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  cursor: pointer;
+  color: #888;
+  transition: 0.2s;
+}
+
+.refresh-btn:hover {
+  color: #fff;
+}
+
+.captcha-input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid #2d2d38;
+  background: #1a1a22;
+  color: #fff;
+  outline: none;
+  margin-bottom: 12px;
+}
+
+.captcha-input:focus {
+  border-color: #5a67ff;
+}
+
+.verify-btn {
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  border: none;
+  background: #5a67ff;
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.verify-btn:hover {
+  background: #434fcf;
+}
+
+.captcha-error {
+  font-size: 13px;
+  color: #ff5c5c;
+  margin-bottom: 10px;
+}
+
+.captcha-success {
+  padding: 18px;
+  border-radius: 10px;
+  background: #1c2b1f;
+  color: #4ade80;
+  font-weight: 500;
+  text-align: center;
+  border: 1px solid #2e4e34;
+}

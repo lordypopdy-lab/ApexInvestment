@@ -10,21 +10,22 @@ import Dashboard from "./pages/Dashboard";
 import BuyAssets from "./pages/BuyAssets";
 import AdminLogin from "./admin/pages/AdminLogin";
 import AdminContact from "./admin/pages/AdminContact";
-import axios from 'axios';
-import { Toaster } from 'react-hot-toast';
+import axios from "axios";
+import { Toaster } from "react-hot-toast";
+
+import Captcha from "./pages/Captcha";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-axios.defaults.baseURL = 'hTttps://apex-investment-server.vercel.app';
+axios.defaults.baseURL = "https://apex-investment-server.vercel.app";
 axios.defaults.withCredentials = true;
 
-//http://localhost:8080 
+//http://localhost:8080
 
 function App() {
-
   return (
     <>
-      <Toaster position='top-right' toastOptions={{ duration: 4000 }} />
+      <Toaster position="top-right" toastOptions={{ duration: 4000 }} />
       <Router>
         <Routes>
           <Route index="/" element={<Index />} />
@@ -32,6 +33,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/admin" element={<Admin />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/captcha" element={<Captcha />} />
           <Route path="/register" element={<Register />} />
           <Route path="/deposite" element={<Deposite />} />
           <Route path="/withdraw" element={<Withdraw />} />
@@ -42,7 +44,7 @@ function App() {
         </Routes>
       </Router>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
