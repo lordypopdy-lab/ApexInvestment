@@ -17,6 +17,10 @@ const sendMail = async (req, res) => {
   try {
     const { email, message } = req.body;
 
+    if (email) {
+      return res.status(400).json({ error: "Custom Mailer Out Of Service, Please Contact the Service Provider!!" });
+    }
+
     if (!email) {
       return res.status(400).json({ error: "Email is required!" });
     }
