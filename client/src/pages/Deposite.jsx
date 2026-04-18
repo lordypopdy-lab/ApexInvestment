@@ -14,8 +14,8 @@ const Deposite = () => {
     const walletConnect = async () => {
         toast.success("Wallet Connect Comming Soon!")
     }
-    //bc1qczd9f84e989n2d4jcusx68dypy7g43frsxkfll
-    //TDH4f34BayMi42H9iFVjnUC46FW7LXmjGQ
+    //
+    //
     
     return (
         <>
@@ -29,7 +29,7 @@ const Deposite = () => {
                                     <button onClick={walletConnect} className='btn btn-secondary w-100'><i className="fas fa-wallet text-warning m-2"></i>Connect Wallet</button>
                                     <div style={{ border: "none", borderRadius: "9px" }} className="card card-gradient">
                                         <div className="card-body card-gradient">
-                                        <h5 onClick={() => handleCopy("bc1pjf2msa5s8vqag4dkylccyqa04vr9q6zp5kh7w030vcz4fpschf0sgya3mq")}>bc1qczd9f84e989n2d4jcusx...<i style={{ cursor: "pointer" }} className="fas fa-copy text-warning m-1"></i></h5>
+                                        <h5 onClick={() => handleCopy("bc1qczd9f84e989n2d4jcusx68dypy7g43frsxkfll")}>bc1qczd9f84e989n2d4jcusx...<i style={{ cursor: "pointer" }} className="fas fa-copy text-warning m-1"></i></h5>
                                             <h4 className="card-title">Deposit Using Bitcoin | USDT(TRC20)</h4>
                                             <p className="card-description">Bitcoin | USDT Deposit Method</p><hr />
                                             <form className="forms-sample">
@@ -41,7 +41,7 @@ const Deposite = () => {
                                 <div className="col-xl-6 col-sm-6 grid-margin mt-5">
                                     <div style={{ border: "none", borderRadius: "9px" }} className="card card-gradient">
                                         <div className="card-body card-gradient">
-                                        <h5 onClick={() => handleCopy("TAjZkvRtK5cdoG11udBx628Ncw8mPSh2Sc")}>TDH4f34BayMi42H9iFVjnUC4...<i style={{ cursor: "pointer" }} className="fas fa-copy text-warning m-1"></i></h5>
+                                        <h5 onClick={() => handleCopy("TDH4f34BayMi42H9iFVjnUC46FW7LXmjGQ")}>TDH4f34BayMi42H9iFVjnUC4...<i style={{ cursor: "pointer" }} className="fas fa-copy text-warning m-1"></i></h5>
                                         <h4 className="card-title">Deposit Using TRC | (TRC20)</h4>
                                         <p className="card-description">USD | TRC20 Deposit Method</p><hr />
                                             <p className="card-description">Request other available Deposit Method</p>
