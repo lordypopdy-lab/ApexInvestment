@@ -17,7 +17,7 @@ import Captcha from "./pages/Captcha";
 
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
-axios.defaults.baseURL = "https://apex-investment-server.vercel.appZ";
+axios.defaults.baseURL = "https://apex-investment-server.vercel.app";
 axios.defaults.withCredentials = true;
 
 //http://localhost:8080
