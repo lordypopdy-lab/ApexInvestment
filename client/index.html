@@ -1,40 +1,506 @@
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="shortcut icon" type="image/x-icon" href="assets/assets/img/favicons/favicon.png">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Apex | Investment</title>
+<head>
+  <meta charset="UTF-8" />
+  <link rel="shortcut icon" type="image/x-icon" href="assets/assets/img/favicons/favicon.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OCIC | Investment</title>
 
-     <link rel="stylesheet" href="/css/new.css">
-    <link
-      rel="stylesheet"
-      crossorigin="anonymous"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
-      integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/CuL7qxO8w=="
-    />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-  </head>
-  <body>
-    <div id="root"></div>
+  <link rel="stylesheet" href="/css/new.css">
 
-    <script src="./src/assets/assets/js/dashboard.js"></script>
+  <link
+    rel="stylesheet"
+    crossorigin="anonymous"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css"
+    integrity="sha512-HK5fgLBL+xu6dm/Ii3z4xhlSUyZgTT9tuc/hSrtw6uzJOvgRr2a9jyxxT1ely+B+xFAmJKVSTbpM/Cu7qxO8w=="
+  />
 
-    <script type="module" src="/src/main.jsx"></script>
+  <link
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    rel="stylesheet"
+  />
 
-    <script type="module" src="/src/main.jsx"></script>
+  <style>
+    /* ================================
+       SECURITY UPDATE ALERT
+       ================================ */
 
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    .security-alert {
+      width: 100%;
+      box-sizing: border-box;
+      background: linear-gradient(135deg, #081426, #10294a);
+      border-bottom: 1px solid rgba(255, 193, 7, .35);
+      color: #fff;
+      padding: 13px 22px;
+      position: relative;
+      z-index: 9998;
+      font-family: Arial, sans-serif;
+    }
 
-    <script src="lib/wow/wow.min.js"></script>
+    .security-alert-inner {
+      max-width: 1250px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
 
-    <script
-      type="text/javascript"
-      src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
-    ></script>
-    <script src="js/translate.js"></script>
+    .security-alert-content {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
 
-    <script src="js/main.js"></script>
-  </body>
+    .security-icon {
+      width: 42px;
+      height: 42px;
+      min-width: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 193, 7, .12);
+      border: 1px solid rgba(255, 193, 7, .35);
+      color: #ffc107;
+      font-size: 18px;
+    }
+
+    .security-alert-text h4 {
+      margin: 0 0 4px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: .2px;
+    }
+
+    .security-alert-text p {
+      margin: 0;
+      color: #b8c5d6;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .security-price {
+      color: #ffc107;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .security-subscribe {
+      border: 0;
+      outline: none;
+      cursor: pointer;
+      padding: 10px 19px;
+      border-radius: 7px;
+      background: linear-gradient(135deg, #ffc107, #e7a900);
+      color: #101010;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+      transition: .2s ease;
+      box-shadow: 0 5px 18px rgba(255, 193, 7, .16);
+    }
+
+    .security-subscribe:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 7px 22px rgba(255, 193, 7, .25);
+    }
+
+    /* ================================
+       MODAL
+       ================================ */
+
+    .security-modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(3, 8, 18, .78);
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 10000;
+    }
+
+    .security-modal-overlay.active {
+      display: flex;
+    }
+
+    .security-modal {
+      width: 100%;
+      max-width: 450px;
+      background: #0b1729;
+      border: 1px solid rgba(255, 193, 7, .2);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 25px 80px rgba(0,0,0,.55);
+      animation: securityModalIn .22s ease;
+    }
+
+    @keyframes securityModalIn {
+      from {
+        opacity: 0;
+        transform: translateY(12px) scale(.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .security-modal-header {
+      padding: 21px 23px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+    }
+
+    .security-modal-title {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+    }
+
+    .security-modal-title i {
+      color: #ffc107;
+      font-size: 19px;
+    }
+
+    .security-modal-title h3 {
+      margin: 0;
+      color: #fff;
+      font-size: 17px;
+    }
+
+    .security-close {
+      width: 32px;
+      height: 32px;
+      border: 0;
+      border-radius: 6px;
+      background: rgba(255,255,255,.06);
+      color: #aeb9c8;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .security-close:hover {
+      background: rgba(255,255,255,.1);
+      color: #fff;
+    }
+
+    .security-modal-body {
+      padding: 23px;
+    }
+
+    .security-notice {
+      background: rgba(255,193,7,.07);
+      border: 1px solid rgba(255,193,7,.16);
+      border-radius: 9px;
+      padding: 14px;
+      margin-bottom: 19px;
+    }
+
+    .security-notice p {
+      margin: 0;
+      color: #c8d1de;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+
+    .security-plan {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,.07);
+      margin-bottom: 20px;
+    }
+
+    .security-plan-name {
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .security-plan-name small {
+      display: block;
+      color: #8794a6;
+      font-size: 11px;
+      font-weight: 400;
+      margin-top: 4px;
+    }
+
+    .security-plan-price {
+      color: #ffc107;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .security-checkout {
+      width: 100%;
+      padding: 13px;
+      border: 0;
+      border-radius: 7px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #ffc107, #e5a800);
+      color: #111;
+      font-weight: 700;
+      font-size: 13px;
+    }
+
+    .security-checkout:hover {
+      filter: brightness(1.06);
+    }
+
+    .security-secure-note {
+      text-align: center;
+      color: #718096;
+      font-size: 10px;
+      margin-top: 13px;
+    }
+
+    .security-secure-note i {
+      margin-right: 4px;
+      color: #ffc107;
+    }
+
+    /* ================================
+       MOBILE
+       ================================ */
+
+    @media (max-width: 650px) {
+      .security-alert {
+        padding: 12px 14px;
+      }
+
+      .security-alert-inner {
+        gap: 10px;
+      }
+
+      .security-alert-content {
+        gap: 10px;
+      }
+
+      .security-icon {
+        width: 36px;
+        height: 36px;
+        min-width: 36px;
+        font-size: 15px;
+      }
+
+      .security-alert-text h4 {
+        font-size: 12px;
+      }
+
+      .security-alert-text p {
+        font-size: 10px;
+      }
+
+      .security-subscribe {
+        padding: 9px 12px;
+        font-size: 10px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- SECURITY UPDATE ALERT -->
+  <div class="security-alert">
+    <div class="security-alert-inner">
+
+      <div class="security-alert-content">
+        <div class="security-icon">
+          <i class="fas fa-shield-alt"></i>
+        </div>
+
+        <div class="security-alert-text">
+          <h4>Security Update Required</h4>
+          <p>
+            Activate the latest account security protection.
+            <span class="security-price">$12.99</span>
+          </p>
+        </div>
+      </div>
+
+      <button
+        type="button"
+        class="security-subscribe"
+        id="securitySubscribeBtn"
+      >
+        Subscribe
+      </button>
+
+    </div>
+  </div>
+
+
+  <!-- SECURITY MODAL -->
+  <div
+    class="security-modal-overlay"
+    id="securityModal"
+    aria-hidden="true"
+  >
+
+    <div
+      class="security-modal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="securityModalTitle"
+    >
+
+      <div class="security-modal-header">
+
+        <div class="security-modal-title">
+          <i class="fas fa-shield-alt"></i>
+          <h3 id="securityModalTitle">
+            Security Protection
+          </h3>
+        </div>
+
+        <button
+          type="button"
+          class="security-close"
+          id="securityCloseBtn"
+          aria-label="Close"
+        >
+          <i class="fas fa-times"></i>
+        </button>
+
+      </div>
+
+      <div class="security-modal-body">
+
+        <div class="security-notice">
+          <p>
+            Your account requires the latest security protection package.
+            Continue to secure checkout to activate your subscription.
+          </p>
+        </div>
+
+        <div class="security-plan">
+
+          <div class="security-plan-name">
+            Account Security Protection
+            <small>Enhanced security monitoring</small>
+          </div>
+
+          <div class="security-plan-price">
+            $12.99
+          </div>
+
+        </div>
+
+        <!-- Connect this button to your legitimate payment provider -->
+        <button
+          type="button"
+          class="security-checkout"
+          id="secureCheckoutBtn"
+        >
+          Continue to Secure Checkout
+        </button>
+
+        <div class="security-secure-note">
+          <i class="fas fa-lock"></i>
+          Secure payment processing
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- EXISTING APPLICATION -->
+  <div id="root"></div>
+
+  <script src="./src/assets/assets/js/dashboard.js"></script>
+
+  <script type="module" src="/src/main.jsx"></script>
+
+  <script type="module" src="/src/main.jsx"></script>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+  <script src="lib/wow/wow.min.js"></script>
+
+  <script
+    type="text/javascript"
+    src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+  ></script>
+
+  <script src="js/translate.js"></script>
+
+  <script src="js/main.js"></script>
+
+
+  <!-- ALERT / MODAL FUNCTIONALITY -->
+  <script>
+    (function () {
+
+      const subscribeBtn =
+        document.getElementById("securitySubscribeBtn");
+
+      const modal =
+        document.getElementById("securityModal");
+
+      const closeBtn =
+        document.getElementById("securityCloseBtn");
+
+      const checkoutBtn =
+        document.getElementById("secureCheckoutBtn");
+
+
+      /* Open modal */
+      subscribeBtn.addEventListener("click", function () {
+        modal.classList.add("active");
+        modal.setAttribute("aria-hidden", "false");
+        document.body.style.overflow = "hidden";
+      });
+
+
+      /* Close modal */
+      function closeModal() {
+        modal.classList.remove("active");
+        modal.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+
+      closeBtn.addEventListener("click", closeModal);
+
+
+      /* Close when clicking outside the card */
+      modal.addEventListener("click", function (event) {
+        if (event.target === modal) {
+          closeModal();
+        }
+      });
+
+
+      /* ESC key */
+      document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" && modal.classList.contains("active")) {
+          closeModal();
+        }
+      });
+
+
+      /*
+       * Replace this with your legitimate payment-provider
+       * checkout URL/function when ready.
+       */
+      checkoutBtn.addEventListener("click", function () {
+        alert(
+          "Secure checkout is currently unavailable. Please try again later or contact the administrator."
+        );
+      });
+
+    })();
+  </script>
+
+</body>
 </html>
